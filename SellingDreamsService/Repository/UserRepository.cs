@@ -7,6 +7,7 @@ namespace SellingDreamsService.Repository;
 
 class UserRepository : IUserRepository
 {
+    private string UserNotExits(int id) => $"User with Id {id} does not exits";
     private readonly InfrastructureDbContext _context;
 
     public UserRepository(InfrastructureDbContext context)
@@ -15,6 +16,12 @@ class UserRepository : IUserRepository
     }
 
     public async Task<IEnumerable<User>> GetUsers() => await _context.User.ToListAsync();
+    public async Task<User> GetUser(int id) 
+    {
+        if (!_context.User.Any(u => u.Id == id))
+            throw new Exception(UserNotExits(id));
+        return await _context.User.SingleAsync(u => u.Id == id);
+    }
 
     public async Task CreateUser(User user)
     {
@@ -27,15 +34,15 @@ class UserRepository : IUserRepository
     public async Task UpdateUser(User user)
     {
         if (!_context.User.Any(u => u.Id == user.Id))
-            throw new Exception($"User with Id {user.Id} does not exits");
+            throw new Exception(UserNotExits(user.Id));
         var oldUser = await _context.User.Where(u => u.Id == user.Id).SingleAsync();
-        if (oldUser.Name == user.Name)
+        if (oldUser.Name != user.Name)
             oldUser.Name = user.Name;
-        if (oldUser.Adress == user.Adress)
+        if (oldUser.Adress != user.Adress)
             oldUser.Adress = user.Adress;
-        if (oldUser.EmailAdress == user.EmailAdress)
+        if (oldUser.EmailAdress != user.EmailAdress)
             oldUser.EmailAdress = user.EmailAdress;
-        if (oldUser.PhoneNumber == user.PhoneNumber)
+        if (oldUser.PhoneNumber != user.PhoneNumber)
             oldUser.PhoneNumber = user.PhoneNumber;
         await _context.SaveChangesAsync();
     }

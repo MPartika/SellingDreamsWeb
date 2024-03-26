@@ -6,14 +6,21 @@ namespace SellingDreamsInfrastructure;
 public class InfrastructureDbContext : DbContext
 {
     public DbSet<User> User { get; set; }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-      => optionsBuilder.UseNpgsql(@"Host=127.0.0.1;Username=postgres;Password=password;Database=dreamdb");
+    public DbSet<UserLogin> UserLogin { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
+        optionsBuilder.UseNpgsql(
+            @"Host=127.0.0.1;Username=postgres;Password=password;Database=dreamdb"
+        );
 
     public override int SaveChanges()
     {
-        var entities = ChangeTracker.Entries()
-            .Where(entity => entity.Entity is IDbEntity &&
-                (entity.State == EntityState.Added || entity.State == EntityState.Modified));
+        var entities = ChangeTracker
+            .Entries()
+            .Where(entity =>
+                entity.Entity is IDbEntity
+                && (entity.State == EntityState.Added || entity.State == EntityState.Modified)
+            );
         foreach (var entity in entities)
         {
             if (entity.State == EntityState.Added)
@@ -25,9 +32,12 @@ public class InfrastructureDbContext : DbContext
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        var entities = ChangeTracker.Entries()
-            .Where(entity => entity.Entity is IDbEntity &&
-                (entity.State == EntityState.Added || entity.State == EntityState.Modified));
+        var entities = ChangeTracker
+            .Entries()
+            .Where(entity =>
+                entity.Entity is IDbEntity
+                && (entity.State == EntityState.Added || entity.State == EntityState.Modified)
+            );
         foreach (var entity in entities)
         {
             if (entity.State == EntityState.Added)

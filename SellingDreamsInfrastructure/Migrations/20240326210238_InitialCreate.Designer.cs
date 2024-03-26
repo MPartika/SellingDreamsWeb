@@ -12,7 +12,7 @@ using SellingDreamsInfrastructure;
 namespace SellingDreamsInfrastructure.Migrations
 {
     [DbContext(typeof(InfrastructureDbContext))]
-    [Migration("20240326154248_InitialCreate")]
+    [Migration("20240326210238_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -54,6 +54,40 @@ namespace SellingDreamsInfrastructure.Migrations
                     b.HasKey("Id", "Name", "EmailAdress");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("SellingDreamsInfrastructure.Model.UserLogin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("Password")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<byte[]>("Salt")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<DateTime>("Updated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserLogin");
                 });
 #pragma warning restore 612, 618
         }

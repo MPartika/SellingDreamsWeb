@@ -4,7 +4,7 @@ namespace SellingDreamsCommandHandler.Users.GetUser;
 
 public class GetUserCommandHandle : ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse>
 {
-  private readonly IUserRepository _repository;
+    private readonly IUserRepository _repository;
 
   public GetUserCommandHandle(IUserRepository repository)
   {
@@ -12,8 +12,8 @@ public class GetUserCommandHandle : ICommandHandlerAsync<GetUserCommand, GetUser
   }
 
   public async Task<GetUserCommandResponse> ExecuteAsync(GetUserCommand command)
-  {
-    var result = await _repository.GetUser(command.Id);
+    {
+        var result = await _repository.GetUser(command.Id);
     return new GetUserCommandResponse
     {
       Id = result.Id,

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SellingDreamsCommandHandler;
 using SellingDreamsCommandHandler.Users.CreateUsers;
+using SellingDreamsCommandHandler.Users.DeleteUsers;
 using SellingDreamsCommandHandler.Users.GetAllUsers;
 using SellingDreamsCommandHandler.Users.GetUser;
+using SellingDreamsCommandHandler.Users.PatchUsers;
 using SellingDreamsCommandHandler.Users.UpdateUsers;
 
 namespace SellingDreamsWebApi.Controllers;
@@ -17,18 +19,23 @@ public class UsersController : Controller
     private readonly ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse> _getUserCommand;
     private readonly ICommandHandlerAsync<CreateUsersCommand> _createCommand;
     private readonly ICommandHandlerAsync<UpdateUsersCommand> _updateCommand;
+    private readonly ICommandHandlerAsync<PatchUsersCommand> _patchCommand;
+    private readonly ICommandHandlerAsync<DeleteUsersCommand> _deleteCommand;
 
     public UsersController(
         ICommandHandlerListAsync<GetAllUsersCommand, GetAllUsersCommandResponse> getAllCommand,
         ICommandHandlerAsync<CreateUsersCommand> createCommand,
         ICommandHandlerAsync<UpdateUsersCommand> updateCommand,
-        ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse> getUserCommand
-    )
+        ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse> getUserCommand,
+        ICommandHandlerAsync<PatchUsersCommand> patchCommand,
+        ICommandHandlerAsync<DeleteUsersCommand> deleteCommand)
     {
         _getAllCommand = getAllCommand;
         _createCommand = createCommand;
         _updateCommand = updateCommand;
         _getUserCommand = getUserCommand;
+        _patchCommand = patchCommand;
+        _deleteCommand = deleteCommand;
     }
 
     [HttpGet()]
@@ -55,6 +62,21 @@ public class UsersController : Controller
     {
         command.UserId = id;
         await _updateCommand.Execute(command);
+        return Ok();
+    }
+
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> Users(int id, [FromBody] PatchUsersCommand command)
+    {
+        command.Id = id;
+        await _patchCommand.Execute(command);
+        return Ok();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> DeleteUsers(int id)
+    {
+        await _deleteCommand.Execute(new DeleteUsersCommand { Id = id});
         return Ok();
     }
 }

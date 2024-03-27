@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDatabase();
 builder.Services.ConfigureApplicationServices();
 builder.Services.AddCommandHandlers();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication("Bearer").AddJwtBearer();
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -24,7 +26,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-app.UseEndpoints(endpoints => {
+app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+{
     _ = endpoints.MapControllers();
 });
 

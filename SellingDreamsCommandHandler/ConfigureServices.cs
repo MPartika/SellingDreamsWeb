@@ -11,6 +11,9 @@ public static class ConfigureServices
         RegisterHandler(services, assembly, typeof(ICommandHandlerListAsync<,>));
         RegisterHandler(services, assembly, typeof(ICommandHandlerAsync<,>));
         RegisterHandler(services, assembly, typeof(ICommandHandlerAsync<>));
+        RegisterHandler(services, assembly, typeof(ICommandHandler<>));
+        RegisterHandler(services, assembly, typeof(ICommandHandler<,>));
+        RegisterHandler(services, assembly, typeof(ICommandHandlerList<,>));
         return services;
     }
 

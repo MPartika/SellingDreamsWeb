@@ -19,9 +19,9 @@ public class UpdateUsersCommandHandler : ICommandHandlerAsync<UpdateUsersCommand
             {
                 Id = command.UserId,
                 Name = command.Name,
-                EmailAddress = command.EmailAdress,
+                EmailAddress = command.EmailAddress,
                 PhoneNumber = command.PhoneNumber,
-                Address = command.Adress
+                Address = command.Address
             }
         );
     }

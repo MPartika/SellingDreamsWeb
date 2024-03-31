@@ -46,14 +46,28 @@ public class AuthController : Controller
 
     private string BuildToken(string userName)
     {
-        var claims = new List<Claim> {new Claim(ClaimTypes.Name, userName), new Claim(ClaimTypes.Role, "User")};
-        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImtvbWluIiwic3ViIjoia29taW4iLCJqdGkiOiIzZmEwYzVmYyIs"));
-        var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-        var token = new JwtSecurityToken(
-                                claims: claims,
-                                expires: DateTime.UtcNow.AddHours(1),
-                                signingCredentials: cred);
+        var issuer = _config["JwtSettings:Issuer"];
+        var audience = _config.GetSection("JwtSettings:Audience").Get<string[]>();
+        var keyConfig = _config["JwtSettings:Key"];
+        if (keyConfig is null || audience is null)
+            throw new Exception("key is missing");
+        var key = Encoding.ASCII.GetBytes(keyConfig);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim("Id", Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(30),
+            Issuer = issuer,
+            Claims = new Dictionary<string, object> {{JwtRegisteredClaimNames.Aud, audience}},
+            SigningCredentials = new SigningCredentials
+            (new SymmetricSecurityKey(key),
+            SecurityAlgorithms.HmacSha512Signature)
+        };
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

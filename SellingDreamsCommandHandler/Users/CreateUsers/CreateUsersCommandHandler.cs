@@ -17,8 +17,8 @@ public class CreateUsersCommandHandler : ICommandHandlerAsync<CreateUsersCommand
     {
         await _repository.CreateUser(new User {
             Name = command.Name,
-            Adress = command.Adress,
-            EmailAdress = command.EmailAdress,
+            Address = command.Adress,
+            EmailAddress = command.EmailAdress,
             PhoneNumber = command.PhoneNumber
         });
     }

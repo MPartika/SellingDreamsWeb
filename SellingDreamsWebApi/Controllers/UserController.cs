@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SellingDreamsCommandHandler;
 using SellingDreamsCommandHandler.Users.CreateUsers;
@@ -10,6 +11,7 @@ using SellingDreamsCommandHandler.Users.UpdateUsers;
 namespace SellingDreamsWebApi.Controllers;
 
 [Route("[controller]")]
+[Authorize]
 public class UsersController : Controller
 {
     private readonly ICommandHandlerListAsync<

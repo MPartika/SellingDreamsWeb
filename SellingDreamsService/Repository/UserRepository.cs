@@ -28,7 +28,7 @@ class UserRepository : IUserRepository
 
     public async Task CreateUser(User user)
     {
-        if (_context.User.Any(u => u.Name == user.Name && u.EmailAdress == user.EmailAdress))
+        if (_context.User.Any(u => u.Name == user.Name && u.EmailAddress == user.EmailAddress))
             throw new Exception("User with the same Id and Email exits");
         await _context.AddAsync(user);
         await _context.SaveChangesAsync();
@@ -41,10 +41,10 @@ class UserRepository : IUserRepository
         var oldUser = await _context.User.Where(u => u.Id == user.Id).SingleAsync();
         if (oldUser.Name != user.Name)
             oldUser.Name = user.Name;
-        if (oldUser.Adress != user.Adress)
-            oldUser.Adress = user.Adress;
-        if (oldUser.EmailAdress != user.EmailAdress)
-            oldUser.EmailAdress = user.EmailAdress;
+        if (oldUser.Address != user.Address)
+            oldUser.Address = user.Address;
+        if (oldUser.EmailAddress != user.EmailAddress)
+            oldUser.EmailAddress = user.EmailAddress;
         if (oldUser.PhoneNumber != user.PhoneNumber)
             oldUser.PhoneNumber = user.PhoneNumber;
         await _context.SaveChangesAsync();
@@ -57,10 +57,10 @@ class UserRepository : IUserRepository
         var oldUser = await _context.User.Where(u => u.Id == user.Id).SingleAsync();
         if (user.Name != null && oldUser.Name != user.Name)
             oldUser.Name = user.Name;
-        if (user.Adress != null && oldUser.Adress != user.Adress)
-            oldUser.Adress = user.Adress;
-        if (user.EmailAdress != null && oldUser.EmailAdress != user.EmailAdress)
-            oldUser.EmailAdress = user.EmailAdress;
+        if (user.Address != null && oldUser.Address != user.Address)
+            oldUser.Address = user.Address;
+        if (user.EmailAddress != null && oldUser.EmailAddress != user.EmailAddress)
+            oldUser.EmailAddress = user.EmailAddress;
         if (user.PhoneNumber != null && oldUser.PhoneNumber != user.PhoneNumber)
             oldUser.PhoneNumber = user.PhoneNumber;
         await _context.SaveChangesAsync();

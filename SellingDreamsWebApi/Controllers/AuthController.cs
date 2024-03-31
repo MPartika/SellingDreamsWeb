@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ public class AuthController : Controller
         var isAuthenticated = await _authenticateLoginCommand.ExecuteAsync(command);
         if (!isAuthenticated.IsAuthorized)
             return Unauthorized();
-        var tokenString = BuildToken();
+        var tokenString = BuildToken(command.UserName);
         return Ok(new { token = tokenString });
     }
 
@@ -43,18 +44,16 @@ public class AuthController : Controller
         return Ok();
     }
 
-    private string BuildToken()
+    private string BuildToken(string userName)
     {
-        var configKey = _config["Authentication:Schemes:Bearer:Key"];
-        if (configKey == null)
-            throw new Exception("Could not find jwt token");
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configKey));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var token = new JwtSecurityToken(_config["Authentication:Schemes:Bearer:ValidIssuer"],
-            _config["Authentication:Schemes:Bearer:ValidIssuer"],
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: creds);
+        var claims = new List<Claim> {new Claim(ClaimTypes.Name, userName), new Claim(ClaimTypes.Role, "User")};
+        var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImtvbWluIiwic3ViIjoia29taW4iLCJqdGkiOiIzZmEwYzVmYyIs"));
+        var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        var token = new JwtSecurityToken(
+                                claims: claims,
+                                expires: DateTime.UtcNow.AddHours(1),
+                                signingCredentials: cred);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

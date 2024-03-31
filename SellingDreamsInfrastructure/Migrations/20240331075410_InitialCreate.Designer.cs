@@ -12,7 +12,7 @@ using SellingDreamsInfrastructure;
 namespace SellingDreamsInfrastructure.Migrations
 {
     [DbContext(typeof(InfrastructureDbContext))]
-    [Migration("20240326210238_InitialCreate")]
+    [Migration("20240331075410_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,10 +36,10 @@ namespace SellingDreamsInfrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("EmailAdress")
+                    b.Property<string>("EmailAddress")
                         .HasColumnType("text");
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Created")
@@ -51,7 +51,7 @@ namespace SellingDreamsInfrastructure.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id", "Name", "EmailAdress");
+                    b.HasKey("Id", "Name", "EmailAddress");
 
                     b.ToTable("User");
                 });

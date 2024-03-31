@@ -4,7 +4,7 @@ namespace SellingDreamsWebApi;
 
 public static class ConfigureSwagger
 {
-  public static IServiceCollection AddSwaggerGen(this IServiceCollection services)
+  public static IServiceCollection ConfigureSwaggerGen(this IServiceCollection services)
   {
     services.AddSwaggerGen(opt =>
     {

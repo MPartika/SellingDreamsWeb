@@ -18,8 +18,8 @@ public class GetAllUsersCommandHandler : ICommandHandlerListAsync<GetAllUsersCom
         {
              Id = result.Id,
              Name = result.Name,
-             Adress = result.Adress,
-             EmailAdress = result.EmailAdress,
+             Address = result.Address,
+             EmailAddress = result.EmailAddress,
              PhoneNumber = result.PhoneNumber
         }).ToList();
     }

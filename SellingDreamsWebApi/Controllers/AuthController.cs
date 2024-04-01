@@ -40,7 +40,7 @@ public class AuthController : Controller
     [HttpPost("[action]")]
     public async Task<IActionResult> CreateLogin([FromBody] CreateLoginCommand command)
     {
-        await _createLoginCommand.Execute(command);
+        await _createLoginCommand.ExecuteAsync(command);
         return Ok();
     }
 

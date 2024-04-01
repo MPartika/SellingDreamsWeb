@@ -13,8 +13,8 @@ public class GetAllUsersCommandHandler : ICommandHandlerListAsync<GetAllUsersCom
 
     public async Task<IEnumerable<GetAllUsersCommandResponse>> ExecuteAsync(GetAllUsersCommand command)
     {
-        var respone = await _repository.GetUsers();
-        return respone.Select(result => new GetAllUsersCommandResponse
+        var response = await _repository.GetUsers();
+        return response.Select(result => new GetAllUsersCommandResponse
         {
              Id = result.Id,
              Name = result.Name,

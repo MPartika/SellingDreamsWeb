@@ -55,7 +55,7 @@ public class UsersController : Controller
     [HttpPost()]
     public async Task<IActionResult> Users([FromBody] CreateUsersCommand command)
     {
-        await _createCommand.Execute(command);
+        await _createCommand.ExecuteAsync(command);
         return Ok();
     }
 
@@ -63,7 +63,7 @@ public class UsersController : Controller
     public async Task<IActionResult> Users(int id, [FromBody] UpdateUsersCommand command)
     {
         command.UserId = id;
-        await _updateCommand.Execute(command);
+        await _updateCommand.ExecuteAsync(command);
         return Ok();
     }
 
@@ -71,14 +71,14 @@ public class UsersController : Controller
     public async Task<IActionResult> Users(int id, [FromBody] PatchUsersCommand command)
     {
         command.Id = id;
-        await _patchCommand.Execute(command);
+        await _patchCommand.ExecuteAsync(command);
         return Ok();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteUsers(int id)
     {
-        await _deleteCommand.Execute(new DeleteUsersCommand { Id = id});
+        await _deleteCommand.ExecuteAsync(new DeleteUsersCommand { Id = id});
         return Ok();
     }
 }

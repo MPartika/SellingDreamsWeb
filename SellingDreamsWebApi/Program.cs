@@ -1,7 +1,4 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using SellingDreamsCommandHandler;
 using SellingDreamsInfrastructure;
 using SellingDreamsService;
@@ -17,28 +14,7 @@ builder.Services.AddDatabase();
 builder.Services.ConfigureApplicationServices();
 builder.Services.AddCommandHandlers();
 builder.Services.AddAuthorization();
-builder
-    .Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(o =>
-    {
-        var key = builder.Configuration["JwtSettings:Key"];
-        if (key is not null)
-            o.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-                ValidAudiences = builder.Configuration.GetSection("JwtSettings:Audience").Get<string[]>(),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false,
-                ValidateIssuerSigningKey = true
-            };
-    });
+builder.Services.AddAuthentication(builder.Configuration);
 builder.Services.AddControllers();
 
 var app = builder.Build();

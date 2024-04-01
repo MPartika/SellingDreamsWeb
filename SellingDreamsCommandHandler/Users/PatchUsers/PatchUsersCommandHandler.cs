@@ -4,15 +4,15 @@ namespace SellingDreamsCommandHandler.Users.PatchUsers;
 
 public class PatchUsersCommandHandler : ICommandHandlerAsync<PatchUsersCommand>
 {
-    private readonly IUserRepository _repositary;
+    private readonly IUserRepository _repository;
 
-    public PatchUsersCommandHandler(IUserRepository repositary)
+    public PatchUsersCommandHandler(IUserRepository repository)
     {
-        _repositary = repositary;
+        _repository = repository;
     }
 
-    public async Task Execute(PatchUsersCommand command)
+    public async Task ExecuteAsync(PatchUsersCommand command)
     {
-       await _repositary.UpdateUser(command);
+       await _repository.UpdateUser(command);
     }
 }

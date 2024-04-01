@@ -13,7 +13,7 @@ public class CreateUsersCommandHandler : ICommandHandlerAsync<CreateUsersCommand
         _repository = repository;
     }
 
-    public async Task Execute(CreateUsersCommand command)
+    public async Task ExecuteAsync(CreateUsersCommand command)
     {
         await _repository.CreateUser(new User {
             Name = command.Name,

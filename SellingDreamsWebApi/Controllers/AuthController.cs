@@ -7,22 +7,32 @@ using Microsoft.IdentityModel.Tokens;
 using SellingDreamsCommandHandler;
 using SellingDreamsCommandHandler.Authenticate.AuthenticateLogin;
 using SellingDreamsCommandHandler.Authenticate.CreateLogin;
+using SellingDreamsCommandHandler.Authenticate.DeleteLogin;
+using SellingDreamsCommandHandler.Authenticate.PatchLogin;
 
 namespace SellingDreamsWebApi.Controllers;
 
+[Authorize]
+[Route("[controller]")]
 public class AuthController : Controller
 {
     private readonly IConfiguration _config;
     private readonly ICommandHandlerAsync<AuthenticateLoginCommand, AuthenticateLoginCommandResponse> _authenticateLoginCommand;
     private readonly ICommandHandlerAsync<CreateLoginCommand> _createLoginCommand;
+    private readonly ICommandHandlerAsync<PatchLoginCommand> _patchLoginCommand;
+    private readonly ICommandHandlerAsync<DeleteLoginCommand> _deleteLoginCommand;
 
     public AuthController(IConfiguration config,
             ICommandHandlerAsync<AuthenticateLoginCommand, AuthenticateLoginCommandResponse> authenticateLoginCommand,
-            ICommandHandlerAsync<CreateLoginCommand> createLoginCommand)
+            ICommandHandlerAsync<CreateLoginCommand> createLoginCommand,
+            ICommandHandlerAsync<PatchLoginCommand> patchLoginCommand,
+            ICommandHandlerAsync<DeleteLoginCommand> deleteLoginCommand)
     {
         _config = config;
         _authenticateLoginCommand = authenticateLoginCommand;
         _createLoginCommand = createLoginCommand;
+        _patchLoginCommand = patchLoginCommand;
+        _deleteLoginCommand = deleteLoginCommand;
     }
 
     [AllowAnonymous]
@@ -37,12 +47,28 @@ public class AuthController : Controller
     }
 
     [AllowAnonymous]
-    [HttpPost("[action]")]
-    public async Task<IActionResult> CreateLogin([FromBody] CreateLoginCommand command)
+    [HttpPost()]
+    public async Task<IActionResult> Login([FromBody] CreateLoginCommand command)
     {
         await _createLoginCommand.ExecuteAsync(command);
         return Ok();
     }
+
+    [HttpPatch("{id:int}")]
+    public async Task<IActionResult> Login(int id, [FromBody] PatchLoginCommand command)
+    {
+        command.Id = id;
+        await _patchLoginCommand.ExecuteAsync(command);
+        return Ok();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Login(int id)
+    {
+        await _deleteLoginCommand.ExecuteAsync(new DeleteLoginCommand { Id = id});
+        return Ok();
+    }
+
 
     private string BuildToken(string userName)
     {

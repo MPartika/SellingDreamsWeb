@@ -12,7 +12,7 @@ public class UpdateUsersCommandHandler : ICommandHandlerAsync<UpdateUsersCommand
         this._repository = repository;
     }
 
-    public async Task Execute(UpdateUsersCommand command)
+    public async Task ExecuteAsync(UpdateUsersCommand command)
     {
         await _repository.UpdateUser(
             new User

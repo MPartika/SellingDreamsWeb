@@ -22,7 +22,7 @@ public interface ICommandHandlerAsync<TCommand, TResponse> where TCommand : ICom
 
 public interface ICommandHandlerAsync<TCommand> where TCommand : ICommand
 {
-    Task Execute(TCommand command);
+    Task ExecuteAsync(TCommand command);
 }
 
 public interface ICommandHandlerListAsync<TCommand, TResponse> where TCommand : ICommand where TResponse : ICommandResponse

@@ -13,7 +13,7 @@ public class CreateLoginCommandHandler : ICommandHandlerAsync<CreateLoginCommand
         _repository = repository;
     }
 
-    public async Task Execute(CreateLoginCommand command)
+    public async Task ExecuteAsync(CreateLoginCommand command)
     {
         var password = AuthenticationHelper.HashPassword(command.Password, out byte[] salt);
         await _repository.CreateLogin(new UserLogin {

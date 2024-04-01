@@ -11,7 +11,7 @@ public class DeleteUsersCommandHandler : ICommandHandlerAsync<DeleteUsersCommand
         _repository = repository;
     }
 
-    public async Task Execute(DeleteUsersCommand command)
+    public async Task ExecuteAsync(DeleteUsersCommand command)
     {
         await _repository.DeleteUser(command.Id);
     }

@@ -5,14 +5,14 @@ using SellingDreamsService;
 using SellingDreamsWebApi;
 using Serilog;
 using Serilog.Events;
-using Serilog.Formatting.Compact;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .Enrich.WithThreadId()
-    .WriteTo.Console(new CompactJsonFormatter())
+    .WriteTo.Console()
+    .WriteTo.Http(requestUri: "http://localhost:5044", queueLimitBytes: null)
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);

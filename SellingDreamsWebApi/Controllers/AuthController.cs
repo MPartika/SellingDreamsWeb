@@ -12,7 +12,7 @@ using SellingDreamsCommandHandler.Authenticate.PatchLogin;
 
 namespace SellingDreamsWebApi.Controllers;
 
-[Authorize]
+
 [Route("[controller]")]
 public class AuthController : Controller
 {
@@ -53,7 +53,8 @@ public class AuthController : Controller
         await _createLoginCommand.ExecuteAsync(command);
         return Ok();
     }
-
+    
+    [Authorize]
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> Login(int id, [FromBody] PatchLoginCommand command)
     {
@@ -62,6 +63,7 @@ public class AuthController : Controller
         return Ok();
     }
 
+    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Login(int id)
     {

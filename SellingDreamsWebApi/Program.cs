@@ -11,6 +11,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .Enrich.WithMachineName()
     .Enrich.WithThreadId()
+    .Enrich.WithProperty("AppDomain", AppDomain.CurrentDomain)
     .WriteTo.Console()
     .WriteTo.Http(requestUri: "http://localhost:5044", queueLimitBytes: null)
     .CreateLogger();
@@ -39,10 +40,14 @@ app.UseSerilogRequestLogging(options =>
     options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Information;
 
     // Attach additional properties to the request completion event
-    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    options.EnrichDiagnosticContext = async (diagnosticContext, httpContext) =>
     {
         diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
         diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+
+        var requestBody = await ConfigureLogging.GetRequestBody(httpContext.Request);
+
+        diagnosticContext.Set("RequestBody", requestBody);
     };
 });
 

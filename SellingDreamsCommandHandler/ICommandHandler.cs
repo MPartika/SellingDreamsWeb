@@ -12,7 +12,7 @@ public interface ICommandHandler<TCommand> where TCommand : ICommand
 
 public interface ICommandHandlerList<TCommand, TResponse> where TCommand : ICommand where TResponse : ICommandResponse
 {
-   IEnumerable<TResponse> ExecuteAsync(TCommand command);
+   IEnumerable<TResponse> Execute(TCommand command);
 }
 
 public interface ICommandHandlerAsync<TCommand, TResponse> where TCommand : ICommand where TResponse : ICommandResponse

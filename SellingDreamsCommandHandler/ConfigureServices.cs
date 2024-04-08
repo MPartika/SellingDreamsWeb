@@ -1,32 +1,80 @@
-using System.Reflection;
+#pragma warning disable CS8604
 using Microsoft.Extensions.DependencyInjection;
-
+using SellingDreamsCommandHandler.Authenticate.AuthenticateLogin;
+using SellingDreamsCommandHandler.Authenticate.CreateLogin;
+using SellingDreamsCommandHandler.Authenticate.DeleteLogin;
+using SellingDreamsCommandHandler.Authenticate.PatchLogin;
+using SellingDreamsCommandHandler.Users.CreateUsers;
+using SellingDreamsCommandHandler.Users.DeleteUsers;
+using SellingDreamsCommandHandler.Users.GetAllUsers;
+using SellingDreamsCommandHandler.Users.GetUser;
+using SellingDreamsCommandHandler.Users.PatchUsers;
+using SellingDreamsCommandHandler.Users.UpdateUsers;
 namespace SellingDreamsCommandHandler;
 
 public static class ConfigureServices
 {
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
     {
-        var assembly = AppDomain.CurrentDomain.Load("SellingDreamsCommandHandler");
-        RegisterHandler(services, assembly);
+        // Register Login without logging Decoration
+        services.AddTransient(typeof(ICommandHandlerAsync<AuthenticateLoginCommand,AuthenticateLoginCommandResponse>), typeof(AuthenticateLoginCommandHandler));
+        services.AddTransient(typeof(ICommandHandlerAsync<CreateLoginCommand>), typeof(CreateLoginCommandHandler));
+        services.AddTransient(typeof(ICommandHandlerAsync<DeleteLoginCommand>), typeof(DeleteLoginCommandHandler));
+        services.AddTransient(typeof(ICommandHandlerAsync<PatchLoginCommand>), typeof(PatchLoginCommandHandler));
+
+        // Register users with logging Decoration
+        services.RegisterCommandHandlerAsync<GetUserCommandHandle, GetUserCommand, GetUserCommandResponse>();
+        services.RegisterCommandHandlerAsync<CreateUsersCommandHandler, CreateUsersCommand>();
+        services.RegisterCommandHandlerAsync<DeleteUsersCommandHandler, DeleteUsersCommand>();
+        services.RegisterCommandHandlerListAsync<GetAllUsersCommandHandler, GetAllUsersCommand, GetAllUsersCommandResponse>();
+        services.RegisterCommandHandlerAsync<PatchUsersCommandHandler, PatchUsersCommand>();
+        services.RegisterCommandHandlerAsync<UpdateUsersCommandHandler, UpdateUsersCommand>();
         return services;
     }
 
-    private static void RegisterHandler(IServiceCollection services, Assembly assembly)
-    {
-        foreach (var type in assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract))
+    private static IServiceCollection RegisterCommandHandlerAsync<TCommandHandler, TCommand, TResult>(
+            this IServiceCollection services)
+            where TCommand : ICommand
+            where TResult : ICommandResponse
+            where TCommandHandler : class, ICommandHandlerAsync<TCommand, TResult>
         {
-            foreach (var appliedInterface in type.GetInterfaces().Where(i => i.IsGenericType && (
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandlerAsync<,>) ||
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandlerAsync<>) ||
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandlerListAsync<,>) ||
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandler<>) ||
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandler<,>) ||
-                    i.GetGenericTypeDefinition() == typeof(ICommandHandlerList<,>)
-            )))
-            {
-                services.AddTransient(appliedInterface, type);
-            }
+
+            services.AddTransient<TCommandHandler>();
+
+            services.AddTransient<ICommandHandlerAsync<TCommand, TResult>>(x =>
+                new LoggingDecoratorAsync<TCommand, TResult>(x.GetService<TCommandHandler>()));
+
+            return services;
         }
-    }
+
+    private static IServiceCollection RegisterCommandHandlerListAsync<TCommandHandler, TCommand, TResult>(
+            this IServiceCollection services)
+            where TCommand : ICommand
+            where TResult : ICommandResponse
+            where TCommandHandler : class, ICommandHandlerListAsync<TCommand, TResult>
+        {
+
+            services.AddTransient<TCommandHandler>();
+
+            services.AddTransient<ICommandHandlerListAsync<TCommand, TResult>>(x =>
+                new LoggingDecoratorListAsync<TCommand, TResult>(x.GetService<TCommandHandler>()));
+
+            return services;
+        }
+
+    private static IServiceCollection RegisterCommandHandlerAsync<TCommandHandler, TCommand>(
+            this IServiceCollection services)
+            where TCommand : ICommand
+            where TCommandHandler : class, ICommandHandlerAsync<TCommand>
+        {
+
+            services.AddTransient<TCommandHandler>();
+
+            services.AddTransient<ICommandHandlerAsync<TCommand>>(x =>
+                new LoggingDecoratorAsync<TCommand>(x.GetService<TCommandHandler>()));
+
+            return services;
+        }
 }
+
+#pragma warning restore CS8604

@@ -51,9 +51,9 @@ public class AuthController : Controller
     public async Task<IActionResult> Login([FromBody] CreateLoginCommand command)
     {
         await _createLoginCommand.ExecuteAsync(command);
-        return Ok();
+        return Created();
     }
-    
+
     [Authorize]
     [HttpPatch("{id:int}")]
     public async Task<IActionResult> Login(int id, [FromBody] PatchLoginCommand command)
@@ -68,7 +68,7 @@ public class AuthController : Controller
     public async Task<IActionResult> Login(int id)
     {
         await _deleteLoginCommand.ExecuteAsync(new DeleteLoginCommand { Id = id});
-        return Ok();
+        return  Ok();
     }
 
 

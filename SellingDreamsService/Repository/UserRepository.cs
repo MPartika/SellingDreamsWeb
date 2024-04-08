@@ -39,12 +39,8 @@ class UserRepository : IUserRepository
         if (!_context.User.Any(u => u.Id == user.Id))
             throw new Exception(UserNotExits(user.Id));
         var oldUser = await _context.User.Where(u => u.Id == user.Id).SingleAsync();
-        if (oldUser.Name != user.Name)
-            oldUser.Name = user.Name;
         if (oldUser.Address != user.Address)
             oldUser.Address = user.Address;
-        if (oldUser.EmailAddress != user.EmailAddress)
-            oldUser.EmailAddress = user.EmailAddress;
         if (oldUser.PhoneNumber != user.PhoneNumber)
             oldUser.PhoneNumber = user.PhoneNumber;
         await _context.SaveChangesAsync();
@@ -55,12 +51,8 @@ class UserRepository : IUserRepository
         if (!_context.User.Any(u => u.Id == user.Id))
             throw new Exception(UserNotExits(user.Id));
         var oldUser = await _context.User.Where(u => u.Id == user.Id).SingleAsync();
-        if (user.Name != null && oldUser.Name != user.Name)
-            oldUser.Name = user.Name;
         if (user.Address != null && oldUser.Address != user.Address)
             oldUser.Address = user.Address;
-        if (user.EmailAddress != null && oldUser.EmailAddress != user.EmailAddress)
-            oldUser.EmailAddress = user.EmailAddress;
         if (user.PhoneNumber != null && oldUser.PhoneNumber != user.PhoneNumber)
             oldUser.PhoneNumber = user.PhoneNumber;
         await _context.SaveChangesAsync();

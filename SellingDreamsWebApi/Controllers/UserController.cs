@@ -56,7 +56,7 @@ public class UsersController : Controller
     public async Task<IActionResult> Users([FromBody] CreateUsersCommand command)
     {
         await _createCommand.ExecuteAsync(command);
-        return Ok();
+        return Created();
     }
 
     [HttpPut("{id:int}")]
@@ -64,7 +64,7 @@ public class UsersController : Controller
     {
         command.UserId = id;
         await _updateCommand.ExecuteAsync(command);
-        return Ok();
+        return Created();
     }
 
     [HttpPatch("{id:int}")]

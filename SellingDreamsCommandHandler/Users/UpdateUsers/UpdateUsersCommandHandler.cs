@@ -18,8 +18,6 @@ public class UpdateUsersCommandHandler : ICommandHandlerAsync<UpdateUsersCommand
             new User
             {
                 Id = command.UserId,
-                Name = command.Name,
-                EmailAddress = command.EmailAddress,
                 PhoneNumber = command.PhoneNumber,
                 Address = command.Address
             }

@@ -8,7 +8,7 @@ namespace SellingDreamsService.Repository;
 
 public class AuthenticationRepository : IAuthenticationRepository
 {
-    private const string passwordGeneretionError = "Password not genereated correctly";
+    private const string passwordGenerationError = "Password not generated correctly";
     private string loginNotFound(int id) => $"Login with id {id} does not exits";
     private readonly InfrastructureDbContext _context;
 
@@ -34,8 +34,8 @@ public class AuthenticationRepository : IAuthenticationRepository
     {
         var oldLogin = await _context.UserLogin.SingleOrDefaultAsync(ul => ul.Id == login.Id);
         if (oldLogin == null) throw new Exception(loginNotFound(login.Id));
-        if (oldLogin.Password == login.Password && oldLogin.Salt != login.Salt) throw new Exception(passwordGeneretionError);
-        if (oldLogin.Password != login.Password && oldLogin.Salt == login.Salt) throw new Exception(passwordGeneretionError);
+        if (oldLogin.Password == login.Password && oldLogin.Salt != login.Salt) throw new Exception(passwordGenerationError);
+        if (oldLogin.Password != login.Password && oldLogin.Salt == login.Salt) throw new Exception(passwordGenerationError);
 
         oldLogin.UserName = login.UserName;
         oldLogin.Password = login.Password;
@@ -49,9 +49,9 @@ public class AuthenticationRepository : IAuthenticationRepository
     {
         var oldLogin = await _context.UserLogin.SingleOrDefaultAsync(ul => ul.Id == login.Id);
         if (oldLogin == null) throw new Exception(loginNotFound(login.Id));
-        if ((oldLogin.Password != null && oldLogin.Salt == null) || (oldLogin.Password != null && oldLogin.Salt == null)) throw new Exception(passwordGeneretionError);
-        if (oldLogin.Password == login.Password && oldLogin.Salt != login.Salt) throw new Exception(passwordGeneretionError);
-        if (oldLogin.Password != login.Password && oldLogin.Salt == login.Salt) throw new Exception(passwordGeneretionError);
+        if ((oldLogin.Password != null && oldLogin.Salt == null) || (oldLogin.Password != null && oldLogin.Salt == null)) throw new Exception(passwordGenerationError);
+        if (oldLogin.Password == login.Password && oldLogin.Salt != login.Salt) throw new Exception(passwordGenerationError);
+        if (oldLogin.Password != login.Password && oldLogin.Salt == login.Salt) throw new Exception(passwordGenerationError);
 
         if (login.UserName != null) oldLogin.UserName = login.UserName;
         if (login.Password != null) oldLogin.Password = login.Password;

@@ -46,7 +46,6 @@ app.UseSerilogRequestLogging(options =>
         diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
 
         var requestBody = await ConfigureLogging.GetRequestBody(httpContext.Request);
-
         diagnosticContext.Set("RequestBody", requestBody);
     };
 });

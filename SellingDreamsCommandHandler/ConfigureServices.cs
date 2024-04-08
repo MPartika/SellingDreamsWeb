@@ -8,28 +8,17 @@ public static class ConfigureServices
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
     {
         var assembly = AppDomain.CurrentDomain.Load("SellingDreamsCommandHandler");
-        RegisterHandler(services, assembly, typeof(ICommandHandlerListAsync<,>));
-        RegisterHandler(services, assembly, typeof(ICommandHandlerAsync<,>));
-        RegisterHandler(services, assembly, typeof(ICommandHandlerAsync<>));
-        RegisterHandler(services, assembly, typeof(ICommandHandler<>));
-        RegisterHandler(services, assembly, typeof(ICommandHandler<,>));
-        RegisterHandler(services, assembly, typeof(ICommandHandlerList<,>));
+        RegisterHandler(services, assembly);
         return services;
     }
 
-    private static void RegisterHandler(IServiceCollection services, Assembly assembly, Type handlerTypeListAsync)
+    private static void RegisterHandler(IServiceCollection services, Assembly assembly)
     {
-        foreach (var type in assembly.GetTypes())
+        foreach (var type in assembly.GetTypes().Where(t => t.IsClass && !t.IsAbstract))
         {
-            if (type.IsClass && !type.IsAbstract)
+            foreach (var appliedInterface in type.GetInterfaces().Where(i => i.IsGenericType))
             {
-                foreach (var i in type.GetInterfaces())
-                {
-                    if (i.IsGenericType && i.GetGenericTypeDefinition() == handlerTypeListAsync)
-                    {
-                        services.AddTransient(i, type);
-                    }
-                }
+                    services.AddTransient(appliedInterface, type);
             }
         }
     }

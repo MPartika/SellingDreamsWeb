@@ -10,7 +10,7 @@ public static class ConfigureLogging
     public static async Task<string> GetRequestBody(HttpRequest httpRequest)
     {
         string requestBody = string.Empty;
-
+        httpRequest.EnableBuffering();
         if (
             httpRequest.Path.ToString().Contains(nameof(AuthController.Login))
             || httpRequest.Path.ToString().Contains(nameof(AuthController.Authenticate))

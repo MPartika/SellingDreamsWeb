@@ -12,7 +12,7 @@ using SellingDreamsInfrastructure;
 namespace SellingDreamsInfrastructure.Migrations
 {
     [DbContext(typeof(InfrastructureDbContext))]
-    [Migration("20240331075410_InitialCreate")]
+    [Migration("20240409145828_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,6 +24,23 @@ namespace SellingDreamsInfrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("SellingDreamsInfrastructure.Model.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Role");
+                });
 
             modelBuilder.Entity("SellingDreamsInfrastructure.Model.User", b =>
                 {
@@ -70,6 +87,9 @@ namespace SellingDreamsInfrastructure.Migrations
                     b.Property<byte[]>("Password")
                         .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
 
                     b.Property<byte[]>("Salt")
                         .IsRequired()

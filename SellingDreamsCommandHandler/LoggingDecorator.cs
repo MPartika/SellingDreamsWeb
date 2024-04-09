@@ -178,28 +178,3 @@ public class LoggingDecoratorListAsync<TCommand, TResult> : ICommandHandlerListA
         }
     }
 }
-
-class EmptyCommandHandler : ICommandHandlerAsync<ICommand, ICommandResponse>
-{
-    public Task<ICommandResponse> ExecuteAsync(ICommand command)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-class EmptyCommandHandlerWithoutResponse : ICommandHandlerAsync<ICommand>
-{
-    public Task ExecuteAsync(ICommand command)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-class EmptyCommandHandlerList : ICommandHandlerListAsync<ICommand, ICommandResponse>
-{
-    public Task<IEnumerable<ICommandResponse>> ExecuteAsync(ICommand command)
-    {
-        throw new NotImplementedException();
-    }
-}
-

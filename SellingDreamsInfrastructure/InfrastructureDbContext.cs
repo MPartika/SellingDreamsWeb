@@ -7,6 +7,7 @@ public class InfrastructureDbContext : DbContext
 {
     public DbSet<User> User { get; set; }
     public DbSet<UserLogin> UserLogin { get; set; }
+    public DbSet<Role> Role { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
         optionsBuilder.UseNpgsql(

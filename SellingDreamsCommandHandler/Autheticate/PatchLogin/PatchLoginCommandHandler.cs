@@ -14,7 +14,7 @@ public class PatchLoginCommandHandler : ICommandHandlerAsync<PatchLoginCommand>
 
     public async Task ExecuteAsync(PatchLoginCommand command)
     {
-        var dto = new PatchLoginDto { Id = command.Id, UserName = command.UserName, UserId = command.UserId };
+        var dto = new PatchLoginDto { Id = command.Id, UserId = command.UserId };
         if (command.Password is not null)
         {
             dto.Password = AuthenticationHelper.HashPassword(command.Password, out byte[] salt);

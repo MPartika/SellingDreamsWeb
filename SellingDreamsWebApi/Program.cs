@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using SellingDreamsCommandHandler;
 using SellingDreamsInfrastructure;

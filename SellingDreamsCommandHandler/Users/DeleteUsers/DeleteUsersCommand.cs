@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Users.DeleteUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class DeleteUsersCommand : ICommand
 {

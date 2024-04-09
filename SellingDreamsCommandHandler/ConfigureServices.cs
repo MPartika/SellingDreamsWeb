@@ -1,15 +1,7 @@
 #pragma warning disable CS8604
 using Microsoft.Extensions.DependencyInjection;
-using SellingDreamsCommandHandler.Authenticate.AuthenticateLogin;
-using SellingDreamsCommandHandler.Authenticate.CreateLogin;
-using SellingDreamsCommandHandler.Authenticate.DeleteLogin;
-using SellingDreamsCommandHandler.Authenticate.PatchLogin;
-using SellingDreamsCommandHandler.Users.CreateUsers;
-using SellingDreamsCommandHandler.Users.DeleteUsers;
-using SellingDreamsCommandHandler.Users.GetAllUsers;
-using SellingDreamsCommandHandler.Users.GetUser;
-using SellingDreamsCommandHandler.Users.PatchUsers;
-using SellingDreamsCommandHandler.Users.UpdateUsers;
+using SellingDreamsCommandHandler.Authenticate;
+using SellingDreamsCommandHandler.Users;
 namespace SellingDreamsCommandHandler;
 
 public static class ConfigureServices

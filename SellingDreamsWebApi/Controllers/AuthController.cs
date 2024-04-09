@@ -5,10 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SellingDreamsCommandHandler;
-using SellingDreamsCommandHandler.Authenticate.AuthenticateLogin;
-using SellingDreamsCommandHandler.Authenticate.CreateLogin;
-using SellingDreamsCommandHandler.Authenticate.DeleteLogin;
-using SellingDreamsCommandHandler.Authenticate.PatchLogin;
+using SellingDreamsCommandHandler.Authenticate;
 
 namespace SellingDreamsWebApi.Controllers;
 

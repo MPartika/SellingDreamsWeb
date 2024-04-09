@@ -1,7 +1,7 @@
 using SellingDreamsService.Contracts;
 using SellingDreamsService.ContractsDto;
 
-namespace SellingDreamsCommandHandler.Authenticate.PatchLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class PatchLoginCommandHandler : ICommandHandlerAsync<PatchLoginCommand>
 {

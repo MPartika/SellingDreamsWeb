@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Authenticate.PatchLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class PatchLoginCommand : ICommand
 {

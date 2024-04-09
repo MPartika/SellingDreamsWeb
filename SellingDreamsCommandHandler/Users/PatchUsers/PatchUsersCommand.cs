@@ -1,5 +1,5 @@
 using SellingDreamsService.ContractsDto;
-namespace SellingDreamsCommandHandler.Users.PatchUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class PatchUsersCommand : IUserPatchDto, ICommand
 {

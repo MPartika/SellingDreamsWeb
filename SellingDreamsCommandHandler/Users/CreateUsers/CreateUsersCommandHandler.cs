@@ -2,7 +2,7 @@
 using SellingDreamsInfrastructure.Model;
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Users.CreateUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class CreateUsersCommandHandler : ICommandHandlerAsync<CreateUsersCommand>
 {

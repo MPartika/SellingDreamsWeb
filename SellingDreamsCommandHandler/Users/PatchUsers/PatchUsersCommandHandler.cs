@@ -1,6 +1,6 @@
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Users.PatchUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class PatchUsersCommandHandler : ICommandHandlerAsync<PatchUsersCommand>
 {

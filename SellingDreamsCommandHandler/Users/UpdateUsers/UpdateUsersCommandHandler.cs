@@ -1,7 +1,7 @@
 using SellingDreamsInfrastructure.Model;
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Users.UpdateUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class UpdateUsersCommandHandler : ICommandHandlerAsync<UpdateUsersCommand>
 {

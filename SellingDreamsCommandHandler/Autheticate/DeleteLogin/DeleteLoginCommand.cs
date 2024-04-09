@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Authenticate.DeleteLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class DeleteLoginCommand : ICommand
 {

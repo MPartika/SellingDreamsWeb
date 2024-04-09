@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Users.GetUser;
+namespace SellingDreamsCommandHandler.Users;
 
 public class GetUserCommandResponse : ICommandResponse
 {

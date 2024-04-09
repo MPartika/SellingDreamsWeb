@@ -1,12 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SellingDreamsCommandHandler;
-using SellingDreamsCommandHandler.Users.CreateUsers;
-using SellingDreamsCommandHandler.Users.DeleteUsers;
-using SellingDreamsCommandHandler.Users.GetAllUsers;
-using SellingDreamsCommandHandler.Users.GetUser;
-using SellingDreamsCommandHandler.Users.PatchUsers;
-using SellingDreamsCommandHandler.Users.UpdateUsers;
+using SellingDreamsCommandHandler.Users;
 
 namespace SellingDreamsWebApi.Controllers;
 

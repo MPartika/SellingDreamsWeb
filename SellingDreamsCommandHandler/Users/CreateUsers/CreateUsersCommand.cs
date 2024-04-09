@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Users.CreateUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public record CreateUsersCommand : ICommand
 {

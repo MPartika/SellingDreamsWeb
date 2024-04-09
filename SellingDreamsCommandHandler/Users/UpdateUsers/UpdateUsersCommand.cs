@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Users.UpdateUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class UpdateUsersCommand : ICommand
 {

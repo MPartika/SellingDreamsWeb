@@ -1,6 +1,6 @@
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Authenticate.AuthenticateLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class AuthenticateLoginCommandHandler : ICommandHandlerAsync<AuthenticateLoginCommand, AuthenticateLoginCommandResponse>
 {

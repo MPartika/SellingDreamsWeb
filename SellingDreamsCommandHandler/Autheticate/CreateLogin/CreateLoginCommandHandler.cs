@@ -2,7 +2,7 @@
 using SellingDreamsInfrastructure.Model;
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Authenticate.CreateLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class CreateLoginCommandHandler : ICommandHandlerAsync<CreateLoginCommand>
 {

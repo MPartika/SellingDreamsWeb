@@ -1,6 +1,6 @@
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Users.DeleteUsers;
+namespace SellingDreamsCommandHandler.Users;
 
 public class DeleteUsersCommandHandler : ICommandHandlerAsync<DeleteUsersCommand>
 {

@@ -1,6 +1,6 @@
 using SellingDreamsService.Contracts;
 
-namespace SellingDreamsCommandHandler.Users.GetUser;
+namespace SellingDreamsCommandHandler.Users;
 
 public class GetUserCommandHandle : ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse>
 {

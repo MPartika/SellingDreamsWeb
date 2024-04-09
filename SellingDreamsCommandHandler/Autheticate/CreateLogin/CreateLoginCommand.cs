@@ -1,4 +1,4 @@
-namespace SellingDreamsCommandHandler.Authenticate.CreateLogin;
+namespace SellingDreamsCommandHandler.Authenticate;
 
 public class CreateLoginCommand : ICommand
 {

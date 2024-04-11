@@ -10,92 +10,124 @@ public static class ConfigureServices
     public static IServiceCollection AddCommandHandlers(this IServiceCollection services)
     {
         // Register authentication without logging Decoration
-        services.AddTransient(typeof(ICommandHandlerAsync<AuthenticateLoginCommand,AuthenticateLoginCommandResponse>), typeof(AuthenticateLoginCommandHandler));
-        services.AddTransient(typeof(ICommandHandlerAsync<CreateLoginCommand>), typeof(CreateLoginCommandHandler));
-        services.AddTransient(typeof(ICommandHandlerAsync<DeleteLoginCommand>), typeof(DeleteLoginCommandHandler));
-        services.AddTransient(typeof(ICommandHandlerAsync<PatchLoginCommand>), typeof(PatchLoginCommandHandler));
+        services.AddTransient<ICommandHandlerAsync<AuthenticateLoginCommand, AuthenticateLoginCommandResponse>, AuthenticateLoginCommandHandler>();
+        services.AddTransient<ICommandHandlerAsync<CreateLoginCommand>, CreateLoginCommandHandler>()
+        .Decorate<ICommandHandlerAsync<CreateLoginCommand>, CreateLoginCommand, CreateLoginValidator, ValidationDecoratorAsync<CreateLoginCommand>>();
+        services.AddTransient<ICommandHandlerAsync<DeleteLoginCommand>, DeleteLoginCommandHandler>();
+        services.AddTransient<ICommandHandlerAsync<PatchLoginCommand>, PatchLoginCommandHandler>()
+        .Decorate<ICommandHandlerAsync<PatchLoginCommand>, PatchLoginCommand, PatchLoginValidator, ValidationDecoratorAsync<PatchLoginCommand>>();
 
-        // Register Services with Validation
-        services.RegisterCommandValidationAsync<CreateLoginCommandHandler, CreateLoginCommand, CreateLoginValidator>();
+        // Register User services
+        services.AddTransient<ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse>, GetUserCommandHandle>()
+        .Decorate<ICommandHandlerAsync<GetUserCommand, GetUserCommandResponse>, LoggingDecoratorAsync<GetUserCommand, GetUserCommandResponse>>();
 
-        // Register users with logging Decoration
-        services.RegisterCommandHandlerAsync<GetUserCommandHandle, GetUserCommand, GetUserCommandResponse>();
-        services.RegisterCommandHandlerAsync<CreateUsersCommandHandler, CreateUsersCommand>();
-        services.RegisterCommandHandlerAsync<DeleteUsersCommandHandler, DeleteUsersCommand>();
-        services.RegisterCommandHandlerListAsync<GetAllUsersCommandHandler, GetAllUsersCommand, GetAllUsersCommandResponse>();
-        services.RegisterCommandHandlerAsync<PatchUsersCommandHandler, PatchUsersCommand>();
-        services.RegisterCommandHandlerAsync<UpdateUsersCommandHandler, UpdateUsersCommand>();
+        services.AddTransient<ICommandHandlerAsync<CreateUsersCommand>, CreateUsersCommandHandler>()
+        .Decorate<ICommandHandlerAsync<CreateUsersCommand>, CreateUsersCommand,CreateUsersValidator, ValidationDecoratorAsync<CreateUsersCommand>>()
+        .Decorate<ICommandHandlerAsync<CreateUsersCommand>, LoggingDecoratorAsync<CreateUsersCommand>>();
+
+        services.AddTransient<ICommandHandlerAsync<DeleteUsersCommand>, DeleteUsersCommandHandler>()
+        .Decorate<ICommandHandlerAsync<DeleteUsersCommand>, LoggingDecoratorAsync<DeleteUsersCommand>>();
+
+        services.AddTransient<ICommandHandlerListAsync<GetAllUsersCommand, GetAllUsersCommandResponse>, GetAllUsersCommandHandler>()
+        .Decorate<ICommandHandlerListAsync<GetAllUsersCommand, GetAllUsersCommandResponse>, LoggingDecoratorListAsync<GetAllUsersCommand, GetAllUsersCommandResponse>>();
+        
+        services.AddTransient<ICommandHandlerAsync<PatchUsersCommand>, PatchUsersCommandHandler>()
+        .Decorate<ICommandHandlerAsync<PatchUsersCommand>, PatchUsersCommand, PatchUsersValidator, ValidationDecoratorAsync<PatchUsersCommand>>()
+        .Decorate<ICommandHandlerAsync<PatchUsersCommand>, LoggingDecoratorAsync<PatchUsersCommand>>();
+        
+        services.AddTransient<ICommandHandlerAsync<UpdateUsersCommand>, UpdateUsersCommandHandler>()
+        .Decorate<ICommandHandlerAsync<UpdateUsersCommand>, UpdateUsersCommand, UpdateUsersValidator, ValidationDecoratorAsync<UpdateUsersCommand>>()
+        .Decorate<ICommandHandlerAsync<UpdateUsersCommand>, LoggingDecoratorAsync<UpdateUsersCommand>>();
+
 
         return services;
     }
 
-    private static IServiceCollection RegisterCommandHandlerAsync<TCommandHandler, TCommand, TResult>(
-            this IServiceCollection services)
-            where TCommand : ICommand
-            where TResult : ICommandResponse
-            where TCommandHandler : class, ICommandHandlerAsync<TCommand, TResult>
-        {
-
-            services.AddTransient<TCommandHandler>();
-
-            services.AddTransient<ICommandHandlerAsync<TCommand, TResult>>(x =>
-                new LoggingDecoratorAsync<TCommand, TResult>(x.GetService<TCommandHandler>()));
-
-            return services;
-        }
-
-    private static IServiceCollection RegisterCommandHandlerListAsync<TCommandHandler, TCommand, TResult>(
-            this IServiceCollection services)
-            where TCommand : ICommand
-            where TResult : ICommandResponse
-            where TCommandHandler : class, ICommandHandlerListAsync<TCommand, TResult>
-        {
-
-            services.AddTransient<TCommandHandler>();
-
-            services.AddTransient<ICommandHandlerListAsync<TCommand, TResult>>(x =>
-                new LoggingDecoratorListAsync<TCommand, TResult>(x.GetService<TCommandHandler>()));
-
-            return services;
-        }
-
-    private static IServiceCollection RegisterCommandHandlerAsync<TCommandHandler, TCommand>(
-            this IServiceCollection services)
-            where TCommand : ICommand
-            where TCommandHandler : class, ICommandHandlerAsync<TCommand>
-        {
-
-            services.AddTransient<TCommandHandler>();
-
-            services.AddTransient<ICommandHandlerAsync<TCommand>>(x =>
-                new LoggingDecoratorAsync<TCommand>(x.GetService<TCommandHandler>()));
-
-            return services;
-        }
-
-    private static IServiceCollection RegisterCommandValidationAsync<TCommandHandler, TCommand, TValidator>(this IServiceCollection services)
-        where TCommand : ICommand
-        where TCommandHandler : class, ICommandHandlerAsync<TCommand>
-        where TValidator: AbstractValidator<TCommand>
+    private static IServiceCollection Decorate<TInterface, TDecorator>(this IServiceCollection services)
+    where TInterface : class
+    where TDecorator : class, TInterface
     {
-        services.AddTransient<TValidator>();
-        services.AddTransient<TCommandHandler>();
-        services.AddTransient<ICommandHandlerAsync<TCommand>>(x =>
-            new ValidationDecoratorAsync<TCommand>(x.GetService<TCommandHandler>(), x.GetService<TValidator>()));
+        var objectFactory = ActivatorUtilities.CreateFactory(
+            typeof(TDecorator),
+            new[] { typeof(TInterface) });
+
+        // Save all descriptors that needs to be decorated into a list.
+        var descriptorsToDecorate = services
+            .Where(s => s.ServiceType == typeof(TInterface))
+            .ToList();
+
+        if (descriptorsToDecorate.Count == 0)
+        {
+            throw new InvalidOperationException($"Attempted to Decorate services of type {typeof(TInterface)}, " +
+                                                "but no such services are present in ServiceCollection");
+        }
+
+        foreach (var descriptor in descriptorsToDecorate)
+        {
+            // Create new descriptor with prepared object factory.
+            var decorated = ServiceDescriptor.Describe(
+                typeof(TInterface),
+                s => (TInterface)objectFactory(s, new[] { s.CreateInstance(descriptor) }),
+                descriptor.Lifetime);
+
+            services.Remove(descriptor);
+            services.Add(decorated);
+        }
+
         return services;
     }
 
-    private static IServiceCollection RegisterCommandValidationAsync<TCommandHandler, TCommand, TResult, TValidator>(this IServiceCollection services)
-        where TCommand : ICommand
-        where TResult: ICommandResponse
-        where TCommandHandler : class, ICommandHandlerAsync<TCommand, TResult>
-        where TValidator: AbstractValidator<TCommand>
+    private static IServiceCollection Decorate<TInterface, TCommand, TValidator, TDecorator >(this IServiceCollection services)
+    where TInterface : class
+    where TCommand: ICommand
+    where TValidator : AbstractValidator<TCommand>
+    where TDecorator : class, TInterface
     {
-        services.AddTransient<TValidator>();
-        services.AddTransient<TCommandHandler>();
-        services.AddTransient<ICommandHandlerAsync<TCommand, TResult>>(x =>
-            new ValidationDecoratorAsync<TCommand, TResult>(x.GetService<TCommandHandler>(), x.GetService<TValidator>()));
+        services.AddTransient<IValidator<TCommand>, TValidator >();
+        var objectFactory = ActivatorUtilities.CreateFactory(
+            typeof(TDecorator),
+            new[] { typeof(TInterface), typeof(TValidator) });
+
+        // Save all descriptors that needs to be decorated into a list.
+        var descriptorsToDecorate = services
+            .Where(s => s.ServiceType == typeof(TInterface))
+            .ToList();
+        var validator = services.FirstOrDefault(s => s.ServiceType == typeof(IValidator<TCommand>));
+
+        if (descriptorsToDecorate.Count == 0)
+            throw new InvalidOperationException($"Attempted to Decorate services of type {typeof(TInterface)}, " +
+                                                "but no such services are present in ServiceCollection");
+        if (validator is null)
+            throw new InvalidOperationException($"Attempted to find validator for command {typeof(TCommand)} but " +
+                                                $"no such validator {typeof(TValidator)} exits");
+        foreach (var descriptor in descriptorsToDecorate) 
+        {
+            // Create new descriptor with prepared object factory.
+            var decorated = ServiceDescriptor.Describe(
+                typeof(TInterface),
+                s => (TInterface)objectFactory(s, new[] { s.CreateInstance(descriptor), s.CreateInstance(validator) }),
+                descriptor.Lifetime);
+
+            services.Remove(descriptor);
+            services.Add(decorated);
+        }
+
         return services;
+    }
+
+    private static object CreateInstance(this IServiceProvider services, ServiceDescriptor descriptor)
+    {
+        if (descriptor.ImplementationInstance != null)
+        {
+            return descriptor.ImplementationInstance;
+        }
+
+        if (descriptor.ImplementationFactory != null)
+        {
+            return descriptor.ImplementationFactory(services);
+        }
+
+        return ActivatorUtilities.GetServiceOrCreateInstance(services, descriptor.ImplementationType);
     }
 }
 

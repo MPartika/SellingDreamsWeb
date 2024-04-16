@@ -3,7 +3,7 @@ using System.Text;
 
 namespace SellingDreamsCommandHandler.Authenticate;
 
-internal static class AuthenticationHelper
+public static class AuthenticationHelper
 {
     private const int keySize = 64;
     private const int iterations = 35000;
